@@ -60,8 +60,7 @@ if uploaded:
     pth_filename = list(uploaded.keys())[0]
     print(f" Fichier uploadé : {pth_filename}")
 else:
-    # Option B : Si le fichier est déjà sur votre Drive
-    print("\n Option B : Charger depuis Google Drive")
+    print("\n Charger depuis Google Drive")
     pth_filename = "/content/drive/MyDrive/Colab Notebooks/dncnn_sigma25_epoch50.pth"
     print(f"   Chemin : {pth_filename}")
 
@@ -317,9 +316,9 @@ if 'checkpoint' in locals():
 print("\n" + "="*70)
 print("MODÈLE CHARGÉ ET PRÊT À L'UTILISATION")
 
-# ===== EXEMPLE 2 : Débruiter une image aléatoire du dataset BSD68 =====
+# ===== EXEMPLE : Débruiter une image aléatoire du dataset BSD68 =====
 print("\n" + "-" * 70)
-print("📸 EXEMPLE 2 : Débruiter une image aléatoire de BSD68")
+print("EXEMPLE : Débruiter une image aléatoire de BSD68")
 print("-" * 70)
 
 import random
@@ -334,7 +333,7 @@ try:
     image_list += glob.glob(os.path.join(bsd68_folder, "*.png"))
 
     if len(image_list) == 0:
-        print(f"❌ Aucune image trouvée dans {bsd68_folder}")
+        print(f" Aucune image trouvée dans {bsd68_folder}")
     else:
         # Sélectionner une image aléatoire
         random_image_path = random.choice(image_list)
@@ -343,8 +342,8 @@ try:
         # Choisir un sigma aléatoire entre 10 et 50
         random_sigma = random.randint(10, 15)
 
-        print(f"🎲 Image sélectionnée : {image_name}")
-        print(f"🎲 Niveau de bruit : σ = {random_sigma}")
+        print(f" Image sélectionnée : {image_name}")
+        print(f" Niveau de bruit : σ = {random_sigma}")
 
         # Charger l'image propre
         clean_img = Image.open(random_image_path).convert('L')
@@ -375,7 +374,7 @@ try:
         mse = torch.mean((denoised.cpu() - clean_tensor) ** 2)
         psnr = 20 * torch.log10(1.0 / torch.sqrt(mse))
 
-        print(f"✅ Image débruitée avec succès !")
+        print(f" Image débruitée avec succès !")
         print(f"   PSNR : {psnr.item():.2f} dB")
 
         # Visualisation comparative
@@ -397,11 +396,11 @@ try:
 
         plt.tight_layout()
         plt.savefig(f'debruitage_sigma{random_sigma}.png', dpi=150, bbox_inches='tight')
-        print(f"💾 Figure sauvegardée : debruitage_sigma{random_sigma}.png")
+        print(f" Figure sauvegardée : debruitage_sigma{random_sigma}.png")
         plt.show()
 
         # Afficher un zoom pour mieux voir les détails
-        print("\n🔍 Zoom sur une région pour mieux voir les détails :")
+        print("\n Zoom sur une région pour mieux voir les détails :")
 
         # Extraire une région d'intérêt (centre de l'image)
         h, w = clean_tensor.shape[2], clean_tensor.shape[3]
@@ -431,5 +430,5 @@ try:
         plt.show()
 
 except FileNotFoundError:
-    print(f"❌ Dossier {bsd68_folder} non trouvé")
-    print("   👉 Vérifiez le chemin et assurez-vous que Google Drive est monté")
+    print(f" Dossier {bsd68_folder} non trouvé")
+    print("  Vérifiez le chemin et assurez-vous que Google Drive est monté")
