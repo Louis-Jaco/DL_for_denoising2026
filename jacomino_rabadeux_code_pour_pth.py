@@ -48,8 +48,7 @@ print("="*70)
 print("CHARGEMENT DU MODÈLE PRÉ-ENTRAÎNÉ")
 print("="*70)
 
-# Option A : Upload depuis votre ordinateur
-print("\n📤 Option A : Upload depuis votre ordinateur")
+print("\n Upload depuis votre ordinateur")
 print("   Exécutez la cellule ci-dessous pour uploader le fichier .pth")
 
 from google.colab import files
@@ -59,11 +58,11 @@ uploaded = files.upload()
 # Récupérer le nom du fichier uploadé
 if uploaded:
     pth_filename = list(uploaded.keys())[0]
-    print(f"✅ Fichier uploadé : {pth_filename}")
+    print(f" Fichier uploadé : {pth_filename}")
 else:
     # Option B : Si le fichier est déjà sur votre Drive
-    print("\n📁 Option B : Charger depuis Google Drive")
-    pth_filename = "/content/drive/MyDrive/Colab Notebooks/dncnn_sigma25_epoch50.pth"  # À ADAPTER
+    print("\n Option B : Charger depuis Google Drive")
+    pth_filename = "/content/drive/MyDrive/Colab Notebooks/dncnn_sigma25_epoch50.pth"
     print(f"   Chemin : {pth_filename}")
 
 # ==============================================================================
@@ -106,7 +105,7 @@ print("="*70)
 
 # Déterminer le device (GPU si disponible)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print(f"\n🖥️  Device : {device}")
+print(f"\n  Device : {device}")
 
 # Créer l'architecture vide
 model = DnCNN(in_channels=1, out_channels=1, depth=17, n_filters=64)
@@ -114,15 +113,15 @@ model = DnCNN(in_channels=1, out_channels=1, depth=17, n_filters=64)
 # Charger le fichier .pth
 try:
     checkpoint = torch.load(pth_filename, map_location=device)
-    print(f"✅ Fichier .pth chargé avec succès !")
+    print(f" Fichier .pth chargé avec succès !")
 
     # Afficher les clés disponibles dans le checkpoint
-    print(f"\n📊 Clés dans le checkpoint : {list(checkpoint.keys())}")
+    print(f"\n Clés dans le checkpoint : {list(checkpoint.keys())}")
 
     # Cas 1 : Le checkpoint contient un dictionnaire avec 'model_state_dict'
     if 'model_state_dict' in checkpoint:
         model.load_state_dict(checkpoint['model_state_dict'])
-        print("✅ Poids du modèle chargés depuis 'model_state_dict'")
+        print(" Poids du modèle chargés depuis 'model_state_dict'")
 
         # Afficher des infos supplémentaires si disponibles
         if 'epoch' in checkpoint:
@@ -135,11 +134,11 @@ try:
     # Cas 2 : Le checkpoint contient directement les poids (state_dict)
     elif 'dncnn.0.weight' in checkpoint or any('dncnn' in k for k in checkpoint.keys()):
         model.load_state_dict(checkpoint)
-        print("✅ Poids du modèle chargés directement")
+        print(" Poids du modèle chargés directement")
 
     # Cas 3 : Format inconnu
     else:
-        print("⚠️  Format du checkpoint non reconnu")
+        print("Format du checkpoint non reconnu")
         print("   Contenu du checkpoint :")
         for key in checkpoint.keys():
             print(f"      - {key}: {type(checkpoint[key])}")
@@ -147,13 +146,13 @@ try:
     # Mettre le modèle en mode évaluation
     model = model.to(device)
     model.eval()
-    print(f"\n✅ Modèle chargé et prêt à l'emploi (mode évaluation)")
+    print(f"\n Modèle chargé et prêt à l'emploi (mode évaluation)")
 
 except FileNotFoundError:
-    print(f"❌ ERREUR : Fichier {pth_filename} non trouvé")
+    print(f"ERREUR : Fichier {pth_filename} non trouvé")
     print("   Vérifiez le chemin ou uploadez le fichier")
 except Exception as e:
-    print(f"❌ ERREUR lors du chargement : {e}")
+    print(f"ERREUR lors du chargement : {e}")
 
 # ==============================================================================
 # ÉTAPE 4 : FONCTION DE DÉBRUITAGE
@@ -257,7 +256,7 @@ print("EXEMPLES D'UTILISATION DU MODÈLE")
 print("="*70)
 
 # ===== EXEMPLE 1 : Débruiter une image propre (ajouter du bruit puis débruiter) =====
-print("\n📸 EXEMPLE 1 : Débruiter une image propre")
+print("\n EXEMPLE 1 : Débruiter une image propre")
 print("-" * 70)
 
 # À ADAPTER : chemin vers une image de test
@@ -266,7 +265,7 @@ test_image_path = "/content/drive/MyDrive/Colab Notebooks/160068.jpg"  # MODIFIE
 try:
     results = denoise_image(model, test_image_path, noise_sigma=25, device=device)
 
-    print(f"✅ Image débruitée avec succès !")
+    print(f"Image débruitée avec succès !")
     print(f"   PSNR : {results['psnr']:.2f} dB")
 
     # Visualisation
@@ -290,8 +289,8 @@ try:
     plt.show()
 
 except FileNotFoundError:
-    print(f"❌ Fichier {test_image_path} non trouvé")
-    print("   👉 Uploadez une image ou modifiez le chemin")
+    print(f"Fichier {test_image_path} non trouvé")
+    print("Uploadez une image ou modifiez le chemin")
 
 
 # ==============================================================================
@@ -304,35 +303,19 @@ print("="*70)
 
 # Compter les paramètres
 total_params = sum(p.numel() for p in model.parameters())
-print(f"📊 Nombre de paramètres : {total_params:,}")
-print(f"📊 Device : {next(model.parameters()).device}")
-print(f"📊 Mode : {'Évaluation' if not model.training else 'Entraînement'}")
+print(f"Nombre de paramètres : {total_params:,}")
+print(f"Device : {next(model.parameters()).device}")
+print(f"Mode : {'Évaluation' if not model.training else 'Entraînement'}")
 
 # Si le checkpoint contient des métadonnées
 if 'checkpoint' in locals():
-    print(f"\n📝 Métadonnées du checkpoint :")
+    print(f"\n Métadonnées du checkpoint :")
     for key, value in checkpoint.items():
         if key not in ['model_state_dict', 'optimizer_state_dict']:
             print(f"   - {key}: {value}")
 
 print("\n" + "="*70)
-print("✅ MODÈLE CHARGÉ ET PRÊT À L'UTILISATION")
-print("="*70)
-print("""
-💡 UTILISATION :
-
-1. Pour débruiter une image propre (ajouter du bruit puis débruiter) :
-   results = denoise_image(model, "chemin/image.jpg", noise_sigma=25, device=device)
-
-2. Pour débruiter une image déjà bruitée :
-   results = denoise_from_noisy_image(model, "chemin/image_bruitee.jpg", device=device)
-
-3. Résultats disponibles dans le dictionnaire :
-   - results['clean'] : image propre (si applicable)
-   - results['noisy'] : image bruitée
-   - results['denoised'] : image débruitée
-   - results['psnr'] : PSNR en dB (si référence disponible)
-""")
+print("MODÈLE CHARGÉ ET PRÊT À L'UTILISATION")
 
 # ===== EXEMPLE 2 : Débruiter une image aléatoire du dataset BSD68 =====
 print("\n" + "-" * 70)
