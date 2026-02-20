@@ -247,7 +247,7 @@ def denoise_from_noisy_image(model, noisy_image_path, device='cuda'):
     }
 
 # ==============================================================================
-# ÉTAPE 5 : EXEMPLES D'UTILISATION
+# ÉTAPE 5 : EXEMPLE D'UTILISATION
 # ==============================================================================
 
 print("\n" + "="*70)
